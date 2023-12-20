@@ -1,9 +1,14 @@
-import Layout from "./routes/Layout";
+import { CustomRoutes } from "./routes/CustomRoutes";
+import { BrowserRouter } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Layout />
+      <BrowserRouter>
+        <div className="bg-[#0D0C0F]">
+          <CustomRoutes />
+        </div>
+      </BrowserRouter>
     </>
   );
 }
