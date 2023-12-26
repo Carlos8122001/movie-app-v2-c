@@ -4,44 +4,47 @@ import { ApiMoviesDetailsResult } from "../interfaces/Interfaces";
 import { useEffect, useState } from "react";
 import YouTube from "react-youtube";
 import { LoaderMovie } from "../components/LoaderMovie";
+import { getFecht } from "../utils/services/Fetch";
+const API_MOVIES_DETAILS = import.meta.env.VITE_API_MOVIE_DETAILS;
+const API_IMG: string = import.meta.env.VITE_API_IMG;
 
 export const MoviesDetails = () => {
-  const movieId = useParams().id;
+  const Id = useParams().id;
+  const movieId = `${Id}?append_to_response=videos&language=es-US`;
   const navigate = useNavigate();
-  const API_IMG: string = "https://image.tmdb.org/t/p/original/";
-  const [movieData, setmovieData] = useState<ApiMoviesDetailsResult>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [moviesData, setmoviesData] = useState<ApiMoviesDetailsResult>();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getDetailsMovies = async (api: string, params: number | string) => {
+    try {
+      const response = await getFecht(api, params);
+      setmoviesData(response);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?append_to_response=videos&language=es-US`,
-      {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE5NzRiNmE0NmEwMDkwMWJmNzQwMDIyYmI1M2YzMyIsInN1YiI6IjY1NzVmOGM3NGJmYTU0MDEzODdmYTViNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Z3Bf_O6uoPis0PpGsGiox1L6Fgsnax-20RI9Wv-tj6I",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setmovieData(data);
-        setLoading(false);
-      })
-      .catch((err) => console.log(err));
+    getDetailsMovies(API_MOVIES_DETAILS, movieId);
   }, [movieId]);
-
-  const IMG_MOCK: string = API_IMG + movieData?.poster_path;
 
   return (
     <>
       {loading === true ? (
         <LoaderMovie />
       ) : (
-        <section className="w-full h-full lg:h-full overflow-hidden bg-[#17161B]">
-          <div className="w-[90%] h-full mx-auto flex flex-col lg:flex-col items-center justify-center py-10">
-            <div className="w-full lg:w-[70%] h-screen  overflow-hidden mb-5">
+        <section
+          className={`w-full h-full lg:h-full overflow-hidden bg-[#17161B]`}
+        >
+          <img
+            src={API_IMG + moviesData?.poster_path}
+            alt="mock"
+            className="w-full h-screen rounded-md  object-fill object-right bg-no-repeat absolute z-0 opacity-20 blur-sm"
+          />
+          <div className="w-[80%] lg:w-[95%] h-full mx-auto flex flex-col  lg:items-start justify-center py-10 relative z-50 lg:flex-row lg:gap-x-10">
+            <div className="w-full lg:w-[50%] h-[90vh] overflow-hidden mb-5">
               <div className="flex flex-row flex-nowrap gap-3 items-center mb-5">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -61,18 +64,18 @@ export const MoviesDetails = () => {
                 <h1 className="text-white text-lg">Volver</h1>
               </div>
               <img
-                src={IMG_MOCK}
+                src={API_IMG + moviesData?.poster_path}
                 alt="mock"
                 className="w-full h-full rounded-md  object-fill object-right bg-no-repeat"
               />
             </div>
 
-            <span className="text-white flex flex-col gap-4 w-full lg:w-[70%] ">
-              <h1 className="text-5xl font-bold">{movieData?.title}</h1>
-              <h2 className="text-gray-400 text-lg">
-                Fecha {movieData?.release_date}
+            <span className="text-white flex flex-col gap-4 w-full lg:w-[50%]">
+              <h1 className="text-5xl font-bold">{moviesData?.title}</h1>
+              <h2 className="text-gray-300 text-lg">
+                Fecha {moviesData?.release_date}
               </h2>
-              <p className="text-gray-400 text-xl">{movieData?.overview}</p>
+              <p className="text-gray-300 text-xl">{moviesData?.overview}</p>
               <div className="flex flex-row items-center gap-x-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -88,11 +91,11 @@ export const MoviesDetails = () => {
                   />
                   <path fill="none" d="M0 0h36v36H0z" />
                 </svg>
-                <h6>Puntuación {movieData?.vote_average}</h6>
+                <h6>Puntuación {moviesData?.vote_average}</h6>
               </div>
               <span className="text-white flex flex-row flex-nowrap gap-4">
                 <h2 className="text-lg font-semibold">Tags:</h2>
-                {movieData?.genres.map((tags) => (
+                {moviesData?.genres.map((tags) => (
                   <h3
                     key={tags.id}
                     className="bg-red-700 p-2 rounded-md text-center"
@@ -101,17 +104,28 @@ export const MoviesDetails = () => {
                   </h3>
                 ))}
               </span>
-              <div className="w-full flex flex-row overflow-x-scroll gap-x-5 rounded-md">
-                {movieData?.videos.results?.map((item) => (
+              <div
+                className={`w-full flex flex-row gap-x-5 rounded-md  ${
+                  moviesData?.videos.results.length !== 0
+                    ? "overflow-x-auto"
+                    : "overflow-hidden"
+                }`}
+              >
+                {moviesData?.videos.results?.length === 0 ? (
+                  <span className="w-full h-80 bg-gray-800 rounded-md">
+                    <h1 className="text-xl font-medium text-white">
+                      No hay trailers disponibles :(
+                    </h1>
+                  </span>
+                ) : (
                   <YouTube
-                    key={item.id}
-                    videoId={item.key}
+                    videoId={moviesData?.videos.results[0].key}
                     opts={{
                       height: "390",
-                      width: "640",
+                      width: "700",
                     }}
                   />
-                ))}
+                )}
               </div>
             </span>
           </div>

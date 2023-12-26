@@ -1,42 +1,46 @@
 import { useEffect, useState } from "react";
 import { ApiResult } from "../interfaces/Interfaces";
 import { ApiMoviesResult } from "../interfaces/Interfaces";
-import { Movie } from "../components/Movie";
+import { MoviesCard } from "../components/MoviesCard";
 import { Pagination } from "../components/Pagination";
+import { getFecht } from "../utils/services/Fetch";
+const API_DISCOVER: string = import.meta.env.VITE_API_MOVIE_DISCOVER;
 
 export const MoviesAll = () => {
   const [movies, setMovies] = useState<ApiResult>();
   const [page, setPage] = useState<number>(1);
 
-  const API_MOVIE_DISCOVER: string = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=es-US&page=${page}&sort_by=popularity.desc`;
-
   const handleNext = (): void => {
+    if (page === 5) return;
     setPage(page + 1);
   };
 
   const handlePrev = (): void => {
+    if (page === 1) return;
     setPage(page - 1);
   };
 
+  const getMoviesAll = async (api: string, params: number | string) => {
+    try {
+      const response = await getFecht(api, params);
+      setMovies(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    fetch(`${API_MOVIE_DISCOVER}`, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE5NzRiNmE0NmEwMDkwMWJmNzQwMDIyYmI1M2YzMyIsInN1YiI6IjY1NzVmOGM3NGJmYTU0MDEzODdmYTViNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Z3Bf_O6uoPis0PpGsGiox1L6Fgsnax-20RI9Wv-tj6I",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => setMovies(data))
-      .catch((err) => console.log(err));
-  }, [API_MOVIE_DISCOVER]);
+    getMoviesAll(API_DISCOVER, page);
+    window.scrollTo({
+      top: 0,
+    });
+  }, [page]);
 
   return (
     <>
       <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-10 px-10 py-10 opacity-70">
         {movies?.results.map((item: ApiMoviesResult) => (
-          <Movie
+          <MoviesCard
             key={item.id}
             title={item.title}
             backdrop_path={item.backdrop_path}

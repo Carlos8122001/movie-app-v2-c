@@ -1,9 +1,22 @@
+export type NavButoms = {
+  name: string;
+  link: string;
+};
+
+export type NavItems = NavButoms[];
+
 export type OptionsFetch = {
   method: "GET";
   headers: {
     accept: string;
     Authorization: string;
   };
+};
+
+export type ParamsFetch = {
+  api: string;
+  page?: number;
+  query?: string;
 };
 
 export type QuizParams = {

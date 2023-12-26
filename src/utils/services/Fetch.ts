@@ -1,20 +1,20 @@
 import { OptionsFetch } from "../../types/Types";
 
+const API_KEY: string = import.meta.env.VITE_API_KEY;
+
 const options: OptionsFetch = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization:
-      "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE5NzRiNmE0NmEwMDkwMWJmNzQwMDIyYmI1M2YzMyIsInN1YiI6IjY1NzVmOGM3NGJmYTU0MDEzODdmYTViNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Z3Bf_O6uoPis0PpGsGiox1L6Fgsnax-20RI9Wv-tj6I",
+    Authorization: `${API_KEY}`,
   },
 };
 
-export const GetFetch = (url: string) => {
-  return fetch(url, options).then((response) => {
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      return response.text();
-    }
-  });
+export const getFecht = async (api: string, params?: number | string) => {
+  const response = await fetch(`${api + params}`, options);
+  if (response.status === 200) {
+    return response.json();
+  } else {
+    return response.text();
+  }
 };

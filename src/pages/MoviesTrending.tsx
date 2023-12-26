@@ -1,50 +1,49 @@
 import { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
 import { ApiMoviesResult, ApiResult } from "../interfaces/Interfaces";
+import { getFecht } from "../utils/services/Fetch";
 import { MoviesCard } from "../components/MoviesCard";
 import { Pagination } from "../components/Pagination";
-import { getFecht } from "../utils/services/Fetch";
+import NavBar from "../components/NavBar";
+const API_TRENDING: string = import.meta.env.VITE_API_MOVIE_TRENDING;
 
-export const MoviesPopular = () => {
-  const [moviesPopular, setMoviesPopular] = useState<ApiResult>();
-  const [pages, setPages] = useState<number>(1);
-  const API_MOVIE_POPULAR: string = import.meta.env.VITE_API_MOVIE_POPULAR;
+export const MoviesTrending = () => {
+  const [movies, setMovies] = useState<ApiResult>();
+  const [page, setPage] = useState<number>(1);
 
   const handleNext = (): void => {
-    if (pages === 5) return;
-    setPages(pages + 1);
+    if (page === 5) return;
+    setPage(page + 1);
   };
 
   const handlePrev = (): void => {
-    if (pages === 1) return;
-    setPages(pages - 1);
+    if (page === 1) return;
+    setPage(page - 1);
   };
 
-  const getPopularMoviesAll = async (api: string, params: number | string) => {
+  const getMoviesAll = async (api: string, params: number | string) => {
     try {
       const response = await getFecht(api, params);
-      setMoviesPopular(response);
+      setMovies(response);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    getPopularMoviesAll(API_MOVIE_POPULAR, pages);
+    getMoviesAll(API_TRENDING, page);
     window.scrollTo({
       top: 0,
     });
-  }, [API_MOVIE_POPULAR, pages]);
-
+  }, [page]);
   return (
     <>
       <div className=" bg-[#141416] w-full h-full flex flex-col items-center">
         <NavBar />
         <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-10 px-10 opacity-70">
           <h2 className="text-5xl text-white text-start pl-5 font-semibold my-5 col-span-full">
-            Populares
+            Tendencias
           </h2>
-          {moviesPopular?.results.map((item: ApiMoviesResult) => (
+          {movies?.results.map((item: ApiMoviesResult) => (
             <MoviesCard
               key={item.id}
               title={item.title}
@@ -55,7 +54,7 @@ export const MoviesPopular = () => {
             />
           ))}
         </div>
-        <Pagination Next={handleNext} Prev={handlePrev} PageStatus={pages} />
+        <Pagination Next={handleNext} Prev={handlePrev} PageStatus={page} />
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import { CategoriesMovies, TrailerMovies } from "../types/Types";
 export interface ApiResult {
   page: number;
   results: [];
+  total_pages?: number;
 }
 
 export interface ApiMoviesResult {
