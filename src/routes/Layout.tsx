@@ -1,4 +1,5 @@
 import { Carousel } from "../components/Carousel";
+import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import { MoviesAll } from "../pages/MoviesAll";
 
@@ -8,6 +9,7 @@ export default function Layout() {
       <NavBar />
       <Carousel />
       <MoviesAll />
+      <Footer />
     </div>
   );
 }

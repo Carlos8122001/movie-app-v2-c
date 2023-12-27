@@ -4,6 +4,7 @@ import { ApiMoviesResult, ApiResult } from "../interfaces/Interfaces";
 import { MoviesCard } from "../components/MoviesCard";
 import { Pagination } from "../components/Pagination";
 import { getFecht } from "../utils/services/Fetch";
+import Footer from "../components/Footer";
 
 export const MoviesPopular = () => {
   const [moviesPopular, setMoviesPopular] = useState<ApiResult>();
@@ -56,6 +57,7 @@ export const MoviesPopular = () => {
           ))}
         </div>
         <Pagination Next={handleNext} Prev={handlePrev} PageStatus={pages} />
+        <Footer />
       </div>
     </>
   );

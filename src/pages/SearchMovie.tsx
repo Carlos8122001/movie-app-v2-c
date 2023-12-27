@@ -4,6 +4,7 @@ import { MoviesAll } from "./MoviesAll";
 import { ApiMoviesResult, ApiResult } from "../interfaces/Interfaces";
 import { getFecht } from "../utils/services/Fetch";
 import { MoviesCard } from "../components/MoviesCard";
+import Footer from "../components/Footer";
 const API_SEARCH: string = import.meta.env.VITE_API_SEARCH;
 
 export const SearchMovie = () => {
@@ -22,16 +23,17 @@ export const SearchMovie = () => {
 
   return (
     <>
-      <section className="w-full h-full flex flex-col justify-center items-center">
+      <section className="w-full h-full flex flex-col justify-center items-center bg-[#141416]">
         <NavBar />
         <form
           className="w-[96%] pt-5"
           onSubmit={(event) => {
             event.preventDefault();
+            if (query === "") return;
             getMoviesAll(API_SEARCH, paramsAPI);
           }}
         >
-          <div className="flex flex-row h-16 bg-[#141416] items-center gap-x-3 px-5 rounded-full">
+          <div className="flex flex-row h-16 bg-[#141416] items-center gap-x-3 px-5 rounded-full border-4 border-red-700">
             <input
               type="text"
               placeholder="¿Que peli estas buscando?"
@@ -41,7 +43,7 @@ export const SearchMovie = () => {
             />
             <button type="submit">
               <svg
-                className="w-6 h-6 text-red-700"
+                className="w-6 h-6 text-red-700 active:scale-110 transition-all"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -59,24 +61,25 @@ export const SearchMovie = () => {
             </button>
           </div>
         </form>
-        <div className="w-full h-full">
-          {result ? (
-            <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-10 px-10 py-10 opacity-70">
-              {result?.results.map((item: ApiMoviesResult) => (
-                <MoviesCard
-                  key={item.id}
-                  title={item.title}
-                  backdrop_path={item.backdrop_path}
-                  original_title={item.original_title}
-                  vote_average={item.vote_average}
-                  id={item.id}
-                />
-              ))}
-            </div>
-          ) : (
-            <MoviesAll />
-          )}
-        </div>
+
+        {result ? (
+          <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-10 px-10 py-10 opacity-70">
+            {result?.results.map((item: ApiMoviesResult) => (
+              <MoviesCard
+                key={item.id}
+                title={item.title}
+                backdrop_path={item.backdrop_path}
+                original_title={item.original_title}
+                vote_average={item.vote_average}
+                id={item.id}
+              />
+            ))}
+          </div>
+        ) : (
+          <MoviesAll />
+        )}
+
+        <Footer />
       </section>
     </>
   );

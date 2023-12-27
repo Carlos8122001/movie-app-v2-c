@@ -20,7 +20,7 @@ export default function NavBar() {
   };
   return (
     <>
-      <header className="flex w-full h-20 justify-between gap-x-4 items-center text-white px-5 lg:px-10 bg-transparent transition-all ease-linear ">
+      <header className="flex w-full h-20 justify-between gap-x-4 items-center text-white px-5 lg:px-10 bg-[# ] transition-all ease-linear">
         <button className="md:hidden" onClick={handleMenu}>
           {!open ? (
             <svg

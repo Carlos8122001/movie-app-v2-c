@@ -50,6 +50,7 @@ export const MoviesAll = () => {
           />
         ))}
       </div>
+
       <Pagination Next={handleNext} Prev={handlePrev} PageStatus={page} />
     </>
   );

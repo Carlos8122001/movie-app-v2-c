@@ -4,6 +4,7 @@ import { getFecht } from "../utils/services/Fetch";
 import { MoviesCard } from "../components/MoviesCard";
 import { Pagination } from "../components/Pagination";
 import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
 const API_TRENDING: string = import.meta.env.VITE_API_MOVIE_TRENDING;
 
 export const MoviesTrending = () => {
@@ -55,6 +56,7 @@ export const MoviesTrending = () => {
           ))}
         </div>
         <Pagination Next={handleNext} Prev={handlePrev} PageStatus={page} />
+        <Footer />
       </div>
     </>
   );

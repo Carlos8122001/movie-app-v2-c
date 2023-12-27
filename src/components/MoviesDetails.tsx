@@ -36,7 +36,7 @@ export const MoviesDetails = () => {
         <LoaderMovie />
       ) : (
         <section
-          className={`w-full h-full lg:h-full overflow-hidden bg-[#17161B]`}
+          className={`w-full h-full lg:h-full overflow-hidden bg-[#0D0C0F]`}
         >
           <img
             src={API_IMG + moviesData?.poster_path}
@@ -112,7 +112,7 @@ export const MoviesDetails = () => {
                 }`}
               >
                 {moviesData?.videos.results?.length === 0 ? (
-                  <span className="w-full h-80 bg-gray-800 rounded-md">
+                  <span className="w-full h-80 bg-[#141416] rounded-md flex items-center justify-center">
                     <h1 className="text-xl font-medium text-white">
                       No hay trailers disponibles :(
                     </h1>
